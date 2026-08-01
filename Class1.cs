@@ -1,6 +1,6 @@
 using Gallop;
 using Gallop.Endpoints;
-using UmamusumeResponseAnalyzer.LiveDisplay;
+using UmamusumeResponseAnalyzer.TerminalGui;
 using UmamusumeResponseAnalyzer.Plugin;
 
 namespace MechaScenarioAnalyzer;
@@ -8,8 +8,7 @@ namespace MechaScenarioAnalyzer;
 public sealed class MechaScenarioAnalyzer : IPlugin
 {
     IDisposable? analyzerRegistration;
-    ILiveDisplayOutput? liveDisplay;
-    LiveDisplayWorkspace? workspace;
+    Workspace? workspace;
     bool hasPublishedTrainingPanel;
 
     public string Name => "赛博杯剧本解析器";
@@ -23,20 +22,19 @@ public sealed class MechaScenarioAnalyzer : IPlugin
         analyzerRegistration = context.Analyzers.RegisterResponse<
             GameApi.SingleModeMecha.CheckEvent,
             SingleModeMechaCheckEventResponse>(Analyze, priority: 1);
-        liveDisplay = context.LiveDisplay;
         hasPublishedTrainingPanel = false;
     }
 
     public void Dispose()
     {
-        analyzerRegistration?.Dispose();
+        var registration = analyzerRegistration;
         analyzerRegistration = null;
+        registration?.Dispose();
 
-        if (liveDisplay is not null && workspace is not null)
-            liveDisplay.RemoveWorkspace(workspace);
+        if (!hasPublishedTrainingPanel)
+            return;
 
-        liveDisplay = null;
-        workspace = null;
+        workspace!.RemovePanel("training");
         hasPublishedTrainingPanel = false;
     }
 
@@ -52,8 +50,8 @@ public sealed class MechaScenarioAnalyzer : IPlugin
         }
 
         var content = Handler.ParseMechaCommandInfo(response);
-        LiveDisplay.SetPanel(
-            Workspace,
+        var workspace = this.workspace ??= Workspace.Create("MechaScenarioAnalyzer");
+        workspace.SetPanel(
             "training",
             "训练分析",
             content,
@@ -61,10 +59,4 @@ public sealed class MechaScenarioAnalyzer : IPlugin
         hasPublishedTrainingPanel = true;
         return ValueTask.CompletedTask;
     }
-
-    ILiveDisplayOutput LiveDisplay => liveDisplay
-        ?? throw new InvalidOperationException("MechaScenarioAnalyzer 尚未初始化 LiveDisplay。");
-
-    LiveDisplayWorkspace Workspace => workspace
-        ??= LiveDisplay.CreateWorkspace("MechaScenarioAnalyzer");
 }

@@ -1,6 +1,6 @@
 using Gallop;
 using System.Text;
-using UmamusumeResponseAnalyzer.LiveDisplay;
+using UmamusumeResponseAnalyzer.TerminalGui;
 using static MechaScenarioAnalyzer.i18n.Game;
 
 namespace MechaScenarioAnalyzer;
@@ -9,7 +9,7 @@ public static class Handler
 {
     static int currentTurn;
 
-    public static LiveDisplayContent ParseMechaCommandInfo(SingleModeMechaCheckEventResponse @event)
+    public static WorkspaceContent ParseMechaCommandInfo(SingleModeMechaCheckEventResponse @event)
     {
         var criticalInfo = new List<string>();
         var turn = new TurnInfoMecha(@event.data);
@@ -165,7 +165,7 @@ public static class Handler
                 builder.AppendLine().Append("伙伴: ").AppendJoin(' ', command.TrainingPartners.Select(x => x.Name));
         }
 
-        return LiveDisplayContent.Text(builder.ToString());
+        return WorkspaceContent.Text(builder.ToString());
     }
 
     static string MotivationText(int motivation)
