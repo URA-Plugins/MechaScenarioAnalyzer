@@ -7,30 +7,13 @@ namespace MechaScenarioAnalyzer;
 
 public sealed class MechaScenarioAnalyzer : IPlugin
 {
-    IDisposable? analyzerRegistration;
     Workspace? workspace;
     bool hasPublishedTrainingPanel;
 
-    public string Name => "赛博杯剧本解析器";
-
-    public string Author => "UmamusumeResponseAnalyzer";
-
-    public string[] Targets => ["Cygames", "Komoe"];
-
-    public void Initialize(IPluginContext context)
-    {
-        analyzerRegistration = context.Analyzers.RegisterResponse<
-            GameApi.SingleModeMecha.CheckEvent,
-            SingleModeMechaCheckEventResponse>(Analyze, priority: 1);
-        hasPublishedTrainingPanel = false;
-    }
+    public void Initialize(IPluginContext context) { }
 
     public void Dispose()
     {
-        var registration = analyzerRegistration;
-        analyzerRegistration = null;
-        registration?.Dispose();
-
         if (!hasPublishedTrainingPanel)
             return;
 
@@ -38,6 +21,7 @@ public sealed class MechaScenarioAnalyzer : IPlugin
         hasPublishedTrainingPanel = false;
     }
 
+    [ResponseAnalyzer<GameApi.SingleModeMecha.CheckEvent>(1)]
     public ValueTask Analyze(SingleModeMechaCheckEventResponse response)
     {
         var data = response.data;
