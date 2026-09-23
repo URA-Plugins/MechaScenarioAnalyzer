@@ -1,6 +1,6 @@
 # MechaScenarioAnalyzer
 
-赛博杯训练分析插件。成功发布的训练结果在当前插件进程内保留 history；重启插件后 history 为空。
+赛博杯训练分析插件。成功发布的训练结果在当前进程内保留 history；重启 Host 后 history 为空。
 
 Scenario history 使用 `(single_mode_chara_id, turn)` 作为记录键。同一育成角色同一回合的后续输出原位更新，不增加记录，也不改变记录顺序。
 

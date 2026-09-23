@@ -62,7 +62,7 @@ public sealed class MechaScenarioAnalyzer : IPlugin
         }
     }
 
-    public void Dispose()
+    public ValueTask DisposeAsync()
     {
         HistoryPanelView? view;
         Workspace? target;
@@ -70,7 +70,7 @@ public sealed class MechaScenarioAnalyzer : IPlugin
         lock (historyGate)
         {
             if (disposed)
-                return;
+                return ValueTask.CompletedTask;
             disposed = true;
             history.Clear();
             liveSnapshot = null;
@@ -87,6 +87,7 @@ public sealed class MechaScenarioAnalyzer : IPlugin
 
         if (removePanel)
             target!.RemovePanel(TrainingPanelKey);
+        return ValueTask.CompletedTask;
     }
 
     [ResponseAnalyzer<GameApi.SingleModeMecha.CheckEvent>(1)]

@@ -9,7 +9,6 @@
     <PluginInternalName>MechaScenarioAnalyzer</PluginInternalName>
     <PluginDisplayName>赛博杯剧本解析器</PluginDisplayName>
     <PluginAuthor>UmamusumeResponseAnalyzer</PluginAuthor>
-    <PluginTargets>Cygames;Komoe</PluginTargets>
   </PropertyGroup>
 
   <ItemGroup>
